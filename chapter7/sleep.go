@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// 参数，默认值，注解
+// flag，默认值，注解
 var period = flag.Duration("period", 1*time.Second, "sleep period")
 
 func main() {
