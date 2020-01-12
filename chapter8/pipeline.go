@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
 func main() {
@@ -11,8 +12,8 @@ func main() {
 	naturals := make(chan int)
 	suqares := make(chan int)
 	go func() {
-		for {
-			naturals <- 1
+		for x := 0; ; x++ {
+			naturals <- x
 		}
 	}()
 
@@ -25,7 +26,10 @@ func main() {
 	}()
 
 	go func() {
-		fmt.Println(<-suqares)
+		for {
+			fmt.Println(<-suqares)
+			time.Sleep(1000 * time.Millisecond)
+		}
 	}()
 	wg.Wait()
 }
