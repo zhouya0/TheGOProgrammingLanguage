@@ -13,6 +13,7 @@ func spinner(delay time.Duration, wg *sync.WaitGroup) {
 			time.Sleep(delay)
 		}
 	}
+	// the Done() for sync.WaitGroup always stay in goroutine
 	defer wg.Done()
 }
 
