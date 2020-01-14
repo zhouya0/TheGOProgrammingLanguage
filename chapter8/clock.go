@@ -4,9 +4,11 @@ import (
 	"io"
 	"net"
 	"time"
+	"sync"
 )
 
 func main() {
+	var x sync.WaitGroup
 	listener, _ := net.Listen("tcp", "localhost:8080")
 	for {
 		conn, err := listener.Accept()
