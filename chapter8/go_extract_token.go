@@ -55,9 +55,14 @@ func Extract(url string) ([]string, error) {
 	return links, nil
 }
 
+// 有点消息队列的意思，chan最有用的功能就是阻塞！
+var tokens = make(chan struct{}, 20)
+
 func crawl(url string) []string {
 	fmt.Println(url)
+	tokens <- struct{}{}
 	list, err := Extract(url)
+	<- tokens
 	if err != nil {
 		log.Print(err)
 	}

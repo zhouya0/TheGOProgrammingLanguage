@@ -28,6 +28,7 @@ func main() {
 	for x := range squares {
 		// 这里有个点非常重要，并不是遍历完值之后就跳出循环了。
 		// 而是在squares关闭之后才会跳出循环。
+		// 所以从某种意义上来说，这也是close(chan )的意义吧
 		fmt.Println(x)
 	}
 
