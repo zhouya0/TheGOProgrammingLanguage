@@ -58,11 +58,12 @@ func Extract(url string) ([]string, error) {
 // 有点消息队列的意思，chan最有用的功能就是阻塞！
 var tokens = make(chan struct{}, 20)
 
+// 这是实际会运行的并发任务
 func crawl(url string) []string {
 	fmt.Println(url)
 	tokens <- struct{}{}
 	list, err := Extract(url)
-	<- tokens
+	<-tokens
 	if err != nil {
 		log.Print(err)
 	}
@@ -73,15 +74,19 @@ func main() {
 	urls := os.Args[1:]
 	worklist := make(chan []string)
 	seen := make(map[string]bool)
+	var n int
+	n++
 	go func() { worklist <- urls }()
-	for v := range worklist {
-		for _, url := range v {
+	for ; n > 0; n-- {
+		list := <-worklist
+		for _, url := range list {
 			if !seen[url] {
 				seen[url] = true
 				// 这里为什么不能这么写？？
 				// 因为这样你的url就不知道拿的是哪个循环中的值
 				// 可能会漏值，也可能是slice的最后一个值
 				// go func() {worklist <- crawl(url)}()
+				n++
 				go func(url string) { worklist <- crawl(url) }(url)
 			}
 		}
