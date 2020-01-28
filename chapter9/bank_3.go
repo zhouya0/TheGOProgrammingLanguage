@@ -8,11 +8,16 @@ import (
 var (
 	mu      sync.Mutex
 	balance int
+	wg sync.WaitGroup
 )
 
 // 一般来讲，被mutex所保护的变量是在mutex变量声明之后立即声明的。
+// Mutex锁只能申请一个！！！
+// Mutex锁只能申请一个！！！
+// Mutex锁只能申请一个！！！
 
-// 这里为什么会发生死锁呢？需要研究！！！
+
+// 这里使用channel会发生阻塞，因为一个goroutine在请求锁，另一个goroutine在等待你完成。
 func Deposit(amount int) {
 	mu.Lock()
 	balance += amount
@@ -21,27 +26,26 @@ func Deposit(amount int) {
 
 func Balance() int {
 	mu.Lock()
-	b := Balance()
+	b := balance
 	mu.Unlock()
 	return b
 }
 
 func main() {
-	done := make(chan struct{})
 
+	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		Deposit(200)
 		fmt.Println("=", Balance())
-		done <- struct{}{}
 	}()
 
+	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		Deposit(100)
-		done <- struct{}{}
 	}()
 
-	<-done
-	<-done
-
+	wg.Wait()
 	fmt.Printf("Hope is gonna be 300 %d\n", Balance())
 }
