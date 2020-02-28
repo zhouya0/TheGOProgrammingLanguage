@@ -9,6 +9,7 @@ func appendInt(x []int, y int) []int {
 	zlen := len(x) + 1
 	if zlen <= cap(x) {
 		z = x[:zlen]
+	// 所以这个else表示了不一定会发生内存分配
 	} else {
 		zcap := zlen
 		if zcap < 2*len(x) {
@@ -17,6 +18,8 @@ func appendInt(x []int, y int) []int {
 		// This is really costy!!!
 		// Try everything to avoid this action!!!
 		z = make([]int, zlen, zcap)
+		// delete是内置的用于map的函数
+		// copy是内置的用于slice的函数
 		copy(z, x)
 	}
 	z[len(x)] = y
