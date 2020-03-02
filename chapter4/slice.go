@@ -19,5 +19,5 @@ func main() {
 	fmt.Println(cuttedSlice)
 	fmt.Println(testSlice)
 	// Golang中slice不能直接比较
-	// fmt.Println(testSlice==cuttedSlice)
+	fmt.Println(testSlice == cuttedSlice)
 }
