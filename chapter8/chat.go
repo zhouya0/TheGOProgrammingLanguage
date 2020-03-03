@@ -9,12 +9,16 @@ import (
 
 type client chan<- string
 
+// 注意这三个channel都是无缓存的channel，所以都会阻塞
+// 注意这个make(chan client)中的client也是一个 type client chan<- string
 var (
 	entering = make(chan client)
 	leaving  = make(chan client)
 	messages = make(chan string)
 )
 
+// 可以看得出来这clients用map而不是slice，其实并不是clients中要存什么值，
+// 而是clients便于增加，也可以方便删除。
 func broadcaster() {
 	clients := make(map[client]bool)
 	for {
@@ -41,6 +45,7 @@ func handleConn(conn net.Conn) {
 	who := conn.RemoteAddr().String()
 	ch <- "You are" + who
 	messages <- who + "has arrived"
+	// 包含channel的channel
 	entering <- ch
 
 	input := bufio.NewScanner(conn)
