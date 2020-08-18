@@ -1,2 +1,2 @@
 # TheGOProgrammingLanguage
-GO语言圣经 学习笔记
+Golang 学习笔记
