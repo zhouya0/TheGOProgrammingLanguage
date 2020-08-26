@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 	"sync"
@@ -9,6 +8,8 @@ import (
 
 type Set struct {
 	data map[int]interface{}
+	// without this, it will have
+	// fatal error: concurrent map writes
 	mu sync.RWMutex
 }
 
@@ -18,10 +19,15 @@ func New() Set {
 }
 
 func (s *Set) Add(num int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	s.data[num] = nil
+
 }
 
 func (s *Set) Delete(num int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	delete(s.data, num)
 }
 
@@ -36,16 +42,19 @@ func (s *Set) String() string{
 
 func main() {
 	test := New()
-	test.Add(3)
-	test.Add(4)
-	test.Add(2)
-	test.Add(3)
-	fmt.Printf("The string is: %v\n",  test.String())
-
-	testString := string([]byte{65, 66})
-	fmt.Println(testString)
-	testString = string(65)
-	fmt.Println(testString)
-
-
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+	go func(){
+		for i:=0; i<1000;i++ {
+			test.Add(i)
+		}
+		wg.Done()
+	}()
+	go func(){
+		for i:=0; i<1000;i++ {
+			test.Add(i)
+		}
+		wg.Done()
+	}()
+	wg.Wait()
 }
