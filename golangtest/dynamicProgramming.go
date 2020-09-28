@@ -42,8 +42,37 @@ func coinChange(coins []int, amount int) int {
 	return count[amount]
 }
 
+
+
+
+
+
+
+func MyCoin(coins []int, target int) int {
+	targetRecord := make([]int, target + 1)
+	for i :=1; i<=target; i++ {
+		targetRecord[i] = -1
+		for _,c := range coins {
+			if i - c < 0  || targetRecord[i - c] == -1{
+				continue
+			}
+			if i - c == 0 {
+				targetRecord[i] = 1
+				continue
+			}
+			current := targetRecord[i-c] + 1
+			if targetRecord[i] == -1  || current < targetRecord[i]{
+				targetRecord[i] = current
+			}
+		}
+	}
+	return targetRecord[target]
+}
+
+
+
 func main() {
-	coins := []int{2,4,6}
-	change := coinChange(coins, 17)
+	coins := []int{2,3,6}
+	change := MyCoin(coins, 15)
 	fmt.Println(change)
 }

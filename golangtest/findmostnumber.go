@@ -83,6 +83,36 @@ func selectSort(list []int) []int{
 	return list
 }
 
+var listtest1  = []int{3,67,1234,54666,65437573}
+var listtest2 = []int{1,5,7,8,11,15}
+
+func mergeSort(list1 []int, list2 []int) []int {
+	var result []int
+	length1 := len(list1)
+	length2 := len(list2)
+	var i int
+	var j int
+	for  {
+		if list1[i] < list2[j] {
+			result = append(result, list1[i])
+			i ++
+		} else {
+			result = append(result, list2[i])
+			j ++
+		}
+		if i == length1 -1 {
+			result = append(result, list2[j:]...)
+			break
+		}
+		if j == length2 -1 {
+			result = append(result, list1[i:]...)
+			break
+		}
+	}
+	return result
+}
+
+
 func quickSort(list []int) {
 	if len(list) <= 1{
 		return
@@ -190,6 +220,5 @@ func sortFunc(list []int) []int {
 
 
 func main() {
-	test := []int{7,3,4,8}
-	fmt.Println(findThree(test,14))
+	fmt.Println(mergeSort(listtest1, listtest2))
 }

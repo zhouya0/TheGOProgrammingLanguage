@@ -57,42 +57,67 @@ func revertTree(b *BinaryTree) {
 
 }
 
-func findSumNumber(b *BinaryTree, number int) bool {
-	number = number - b.this
-	if b.left != nil {
-		boolLeft := findSumNumber(b.left, number)
-		if boolLeft {
-			return true
-		}
-	}
-
-	if b.right != nil {
-		boolRight := findSumNumber(b.right, number)
-		if boolRight {
-			return true
-		}
-	}
-	if number == 0 {
-		return true
-	}
-	return false
-}
-
 var result = make(map[int][]int)
 
-func normalOrder(b *BinaryTree, level int ) {
-	if result[level] == nil {
+
+func cengci(b *BinaryTree, level int){
+	if _,ok := result[level]; !ok {
 		result[level] = []int{}
 	}
+	if b != nil {
+		if level % 2 == 0{
+			result[level] = append(result[level], b.this)
+		} else {
+			result[level] = append([]int{b.this}, result[level]...)
+		}
 
-	result[level] = append(result[level], b.this)
-
+	}
 	if b.left != nil {
-		normalOrder(b.left, level+1)
+		cengci(b.left, level + 1)
+	}
+	if b.right !=nil {
+		cengci(b.right, level + 1)
+	}
+	return
+}
+
+func findSumNumber(b *BinaryTree, target int) []int {
+	sum := []int{}
+	return sum
+}
+
+var sums []int
+func findOneSum(b *BinaryTree, sum []int) []int {
+	if b != nil {
+		sum = append(sum, b.this)
+	}
+	if b.left == nil && b.right == nil {
+		fmt.Println(sum)
+	}
+	if b.left != nil {
+		findOneSum(b.left, append([]int{}, sum...))
+
 	}
 	if b.right != nil {
-		normalOrder(b.right, level+1)
+		findOneSum(b.right, append([]int{}, sum...))
 	}
+	return sum
+}
+
+func findMaxLength(b *BinaryTree) int {
+	if b == nil {
+		return 0
+	}
+	left := findMaxLength(b.left) + 1
+	right := findMaxLength(b.right) + 1
+	return max(left, right)
+}
+
+func max(a int, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
 
 func main() {
@@ -107,7 +132,6 @@ func main() {
 	t1 := BinaryTree{this: 1, left: &t3, right: &t4}
 	t0 := BinaryTree{this:0, left: &t1, right: &t2}
 
-	fmt.Println(findSumNumber(&t0, 9))
-	normalOrder(&t0, 0)
-	fmt.Println(result)
+
+	findOneSum(&t0, []int{})
 }

@@ -29,7 +29,5 @@ func main() {
 		}
 		wg.Done()
 	}()
-
-
 	wg.Wait()
 }
